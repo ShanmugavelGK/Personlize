@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.augusta.dev.personalize">
+
+    <application
+        android:allowBackup="true"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:supportsRtl="true"
+        android:theme="@style/AppTheme">
+        <activity android:name=".PersonalizeActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <receiver android:name=".NewAppWidget">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/new_app_widget_info" />
+        </receiver>
+        <receiver android:name=".broadcast.PendingBroadCastReceiver"/>
+        <receiver android:name=".broadcast.AlarmBroadCastReceiver"/>
+
+        <activity
+            android:name=".ListProfileDialogActivity"
+            android:theme="@android:style/Theme.Holo.Dialog.NoActionBar" />
+
+        <service
+            android:name=".OpenAppService"
+            android:enabled="true" />
+
+        <activity android:name=".SettingActivity" />
+        <activity android:name=".AddNewSettingActivity"></activity>
+    </application>
+
+</manifest>
