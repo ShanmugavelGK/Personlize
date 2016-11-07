@@ -32,7 +32,7 @@ import static com.augusta.dev.personalize.utliz.Constants.ONE_DAY;
 
 public class AddNewSettingActivity extends AppCompatActivity {
 
-    EditText edt_time;// Test Commit
+    EditText edt_time;
     Spinner spr_mode;
     Button btn_submit;
     TimePickerDialog mTimePicker;

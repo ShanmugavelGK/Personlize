@@ -10,6 +10,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.app.AppCompatDelegate;
 import android.support.v7.app.NotificationCompat;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -42,8 +43,9 @@ public class PersonalizeActivity extends AppCompatActivity {
     private ArrayList<ArrayList<ModeChildBean>> mModeItems;
 
     static int[] resourceId = new int[]{R.id.normal, R.id.silent, R.id.office, R.id.meeting, R.id.travel};
-    static int[] drawableSelect = new int[]{R.drawable.ic_notify_normal_select, R.drawable.ic_notify_silent_select, R.drawable.ic_notify_office_select, R.drawable.ic_notify_meeting_select, R.drawable.ic_notify_travel_select};
+   /* static int[] drawableSelect = new int[]{R.drawable.ic_notify_normal_select, R.drawable.ic_notify_silent_select, R.drawable.ic_notify_office_select, R.drawable.ic_notify_meeting_select, R.drawable.ic_notify_travel_select};
     static int[] drawableUnSelect = new int[]{R.drawable.ic_notify_normal_unselect, R.drawable.ic_notify_silent_unselect, R.drawable.ic_notify_office_unselect, R.drawable.ic_notify_meeting_unselect, R.drawable.ic_notify_travel_unselect};
+*/
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -254,10 +256,12 @@ public class PersonalizeActivity extends AppCompatActivity {
 
                 for (int i = 0; i < jsonArray.length(); i++) {
 
-                    remoteViews.setTextViewCompoundDrawables(resourceId[i], 0, drawableUnSelect[i], 0, 0);
+                    //remoteViews.setTextViewCompoundDrawables(resourceId[i], 0, drawableUnSelect[i], 0, 0);
+                    CommonFunction.setVectorRemoteView(remoteViews, resourceId[i], i, false);
                     JSONObject jsonObject = jsonArray.getJSONObject(i);
                     if (jsonObject.getBoolean(Constants.IS_SELECT))
-                        remoteViews.setTextViewCompoundDrawables(resourceId[i], 0, drawableSelect[i], 0, 0);
+                        CommonFunction.setVectorRemoteView(remoteViews, resourceId[i], i, true);
+                    //remoteViews.setTextViewCompoundDrawables(resourceId[i], 0, drawableSelect[i], 0, 0);
                 }
             }
         } catch (Exception exp) {

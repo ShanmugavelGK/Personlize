@@ -22,7 +22,7 @@
         android:layout_margin="16dp"
         android:layout_alignParentBottom="true"
         android:layout_alignParentRight="true"
-        android:src="@drawable/ic_plus"
+        app:srcCompat="@drawable/ic_plus"
         app:layout_anchor="@id/elv_mode"
         app:layout_anchorGravity="bottom|right|end" />
 </RelativeLayout>
