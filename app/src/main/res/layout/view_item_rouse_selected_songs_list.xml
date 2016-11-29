@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/view_item"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    tools:context="com.augusta.dev.personalize.IntroActivity"
+    tools:ignore="MissingPrefix">
+
+    <ImageView
+        android:id="@+id/iv_is_selected"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_marginRight="10dp"
+        app:srcCompat="@drawable/ic_check_blank_circle" />
+
+    <TextView
+        android:id="@+id/tv_songs_name"
+        fontPath="fonts/Roboto-LightItalic.ttf"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_toLeftOf="@+id/iv_delete"
+        android:layout_toRightOf="@+id/iv_is_selected"
+        android:gravity="left"
+        android:maxLines="1"
+        android:paddingBottom="5dp"
+        android:paddingTop="5dp"
+        android:text="Ae Dil Hai Mushkil - Title Track Pri tam , Arijit Singh Ae Dil Hai Mushkil"
+        android:textColor="@color/bg_3"
+        android:textSize="14sp"
+        android:textStyle="italic" />
+
+
+    <ImageView
+        android:id="@+id/iv_delete"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:layout_marginRight="10dp"
+        app:srcCompat="@drawable/ic_remove" />
+
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_below="@+id/tv_songs_name"
+        android:layout_marginTop="10dp"
+        android:background="@color/bg_border" />
+</RelativeLayout>

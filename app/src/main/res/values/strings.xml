@@ -11,4 +11,10 @@
     <string name="str_silent">Silent</string>
     <string name="str_normal">Normal</string>
 
+    <string name="str_personalize">Personalize</string>
+    <string name="str_rouse_up">Rouse UP</string>
+    <string name="str_set_song_time">Set Time &amp; Songs</string>
+    <string name="str_browse_songs">Browse Songs</string>
+    <string name="title_activity_home">HomeActivity</string>
+
 </resources>

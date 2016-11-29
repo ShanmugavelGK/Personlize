@@ -3,12 +3,13 @@
     package="com.augusta.dev.personalize">
 
     <application
+        android:name=".application.FontsConfigApp"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".PersonalizeActivity">
+        <activity android:name=".activity.HomeActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -25,19 +26,21 @@
                 android:name="android.appwidget.provider"
                 android:resource="@xml/new_app_widget_info" />
         </receiver>
-        <receiver android:name=".broadcast.PendingBroadCastReceiver"/>
-        <receiver android:name=".broadcast.AlarmBroadCastReceiver"/>
-
-        <activity
-            android:name=".ListProfileDialogActivity"
-            android:theme="@android:style/Theme.Holo.Dialog.NoActionBar" />
-
-        <service
-            android:name=".OpenAppService"
-            android:enabled="true" />
+        <receiver android:name=".broadcast.PendingBroadCastReceiver" />
+        <receiver android:name=".broadcast.AlarmBroadCastReceiver" />
 
         <activity android:name=".SettingActivity" />
-        <activity android:name=".AddNewSettingActivity"></activity>
+        <activity android:name=".AddNewSettingActivity" />
+        <activity android:name=".PersonalizeActivity" />
+        <!--
+             <activity
+             android:name=".activity.HomeActivity"
+             android:label="@string/title_activity_home"
+             android:theme="@style/AppTheme.NoActionBar" />
+        -->
+        <activity android:name=".activity.RouseUpActivity" />
+        <activity android:name=".activity.RouseBrowseActivity" />
+        <activity android:name=".activity.BrowseSongActivity"></activity>
     </application>
 
 </manifest>

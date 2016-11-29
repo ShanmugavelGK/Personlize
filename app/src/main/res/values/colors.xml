@@ -17,5 +17,10 @@
     <color name="widget_select_non">#FFFFFF</color>
     <color name="widget_select">#4CAF50</color>
 
+    <color name="bg_1">#673AB7</color>
+    <color name="bg_2">#FF5722</color>
+    <color name="bg_3">#607D8B</color>
+    <color name="bg_border">#E0E0E0</color>
+
 
 </resources>
