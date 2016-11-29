@@ -1,6 +1,7 @@
 package com.augusta.dev.personalize;
 
 import android.app.Activity;
+import android.app.AlarmManager;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -21,6 +22,7 @@ import android.widget.Toast;
 import com.augusta.dev.personalize.adapter.ModeAdapter;
 import com.augusta.dev.personalize.bean.ModeChildBean;
 import com.augusta.dev.personalize.bean.ModeParentBean;
+import com.augusta.dev.personalize.broadcast.AlarmBroadCastReceiver;
 import com.augusta.dev.personalize.broadcast.PendingBroadCastReceiver;
 import com.augusta.dev.personalize.utliz.CommonFunction;
 import com.augusta.dev.personalize.utliz.Constants;
@@ -31,8 +33,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-
-import static com.augusta.dev.personalize.utliz.Constants.ONLISTUPDATE;
+import java.util.Calendar;
 
 public class PersonalizeActivity extends AppCompatActivity {
 
@@ -43,9 +44,10 @@ public class PersonalizeActivity extends AppCompatActivity {
     private ArrayList<ArrayList<ModeChildBean>> mModeItems;
 
     static int[] resourceId = new int[]{R.id.normal, R.id.silent, R.id.office, R.id.meeting, R.id.travel};
-   /* static int[] drawableSelect = new int[]{R.drawable.ic_notify_normal_select, R.drawable.ic_notify_silent_select, R.drawable.ic_notify_office_select, R.drawable.ic_notify_meeting_select, R.drawable.ic_notify_travel_select};
-    static int[] drawableUnSelect = new int[]{R.drawable.ic_notify_normal_unselect, R.drawable.ic_notify_silent_unselect, R.drawable.ic_notify_office_unselect, R.drawable.ic_notify_meeting_unselect, R.drawable.ic_notify_travel_unselect};
-*/
+
+    AlarmManager alarmManager;
+    private PendingIntent alarmIntent;
+    private int EVERY_TWO_MINUTES = 2 * 60 * 1000;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,13 +55,23 @@ public class PersonalizeActivity extends AppCompatActivity {
         setContentView(R.layout.activity_personalize);
         findViewById();
         mPersonalizeActivity = this;
-        registerReceiver(broadcastReceiver, new IntentFilter(ONLISTUPDATE));
+        registerReceiver(broadcastReceiver, new IntentFilter(Constants.ONLISTUPDATE));
+
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(System.currentTimeMillis());
+
+        alarmManager  = (AlarmManager)getApplicationContext().getSystemService(Context.ALARM_SERVICE);
+        Intent intent = new Intent(this, AlarmBroadCastReceiver.class);
+        intent.setAction("mode_location");
+
+        alarmIntent = PendingIntent.getBroadcast(this, 100, intent, 0);
+        alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(),
+                EVERY_TWO_MINUTES, alarmIntent);
     }
 
     BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            // internet lost alert dialog method call from here...
             dataPopulate();
             setAdapter();
         }
@@ -222,6 +234,8 @@ public class PersonalizeActivity extends AppCompatActivity {
     }
 
     public boolean onOptionsItemSelected(MenuItem item) {
+        Intent intent;
+
         switch (item.getItemId()) {
             case R.id.notification_clear:
                 String str = item.getTitle().toString();
@@ -237,11 +251,18 @@ public class PersonalizeActivity extends AppCompatActivity {
 
                 return true;
             case R.id.settings:
-                Intent intent = new Intent(PersonalizeActivity.this, SettingActivity.class);
+                intent = new Intent(PersonalizeActivity.this, SettingActivity.class);
                 startActivity(intent);
+                break;
+            case R.id.location_mode:
+                intent = new Intent(PersonalizeActivity.this, LocationModeSettingsActivity.class);
+                startActivity(intent);
+                break;
             default:
                 return super.onOptionsItemSelected(item);
+
         }
+        return true;
     }
 
     private static void updateAppWidget(Context mActivity, RemoteViews remoteViews) {

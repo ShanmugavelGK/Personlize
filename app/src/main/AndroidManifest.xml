@@ -2,6 +2,10 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.augusta.dev.personalize">
 
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.INTERNET" />
+
     <application
         android:name=".application.FontsConfigApp"
         android:allowBackup="true"
@@ -9,6 +13,10 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="@string/google_maps_api" />
+
         <activity android:name=".activity.HomeActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -40,7 +48,17 @@
         -->
         <activity android:name=".activity.RouseUpActivity" />
         <activity android:name=".activity.RouseBrowseActivity" />
-        <activity android:name=".activity.BrowseSongActivity"></activity>
+        <activity android:name=".activity.BrowseSongActivity" />
+        <activity android:name=".LocationModeSettingsActivity" />
+        <activity android:name=".AddLocationModeActivity" />
+
+        <receiver android:name=".broadcast.BootCompleted">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED"></action>
+            </intent-filter>
+        </receiver>
+
+        <activity android:name=".AppSettingsActivity"></activity>
     </application>
 
 </manifest>

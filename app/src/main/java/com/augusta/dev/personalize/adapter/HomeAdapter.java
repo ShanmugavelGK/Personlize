@@ -10,6 +10,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.augusta.dev.personalize.AppSettingsActivity;
 import com.augusta.dev.personalize.PersonalizeActivity;
 import com.augusta.dev.personalize.R;
 import com.augusta.dev.personalize.activity.RouseUpActivity;
@@ -54,6 +55,9 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.MyViewHolder> 
                     mContext.startActivity(intent);
                 } else if (position == 1) {
                     intent = new Intent(mContext, RouseUpActivity.class);
+                    mContext.startActivity(intent);
+                } else if (position == 2) {
+                    intent = new Intent(mContext, AppSettingsActivity.class);
                     mContext.startActivity(intent);
                 }
             }

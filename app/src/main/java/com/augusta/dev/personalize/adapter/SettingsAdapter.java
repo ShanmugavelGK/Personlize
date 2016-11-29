@@ -26,6 +26,11 @@ public class SettingsAdapter extends RecyclerView.Adapter<SettingsAdapter.MyView
 
     private List<SettingsEntity> profileList;
     private Activity activity;
+
+    public void setLocationMode(boolean locationMode) {
+        this.locationMode = locationMode;
+    }
+
     public interface OnClick {
         void onClick(int position);
         void onDeleteClick(int position);
@@ -55,6 +60,8 @@ public class SettingsAdapter extends RecyclerView.Adapter<SettingsAdapter.MyView
     public SettingsAdapter(List<SettingsEntity> moviesList) {
         this.profileList = moviesList;
     }
+
+    private boolean locationMode=false;
  
     @Override
     public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -66,8 +73,18 @@ public class SettingsAdapter extends RecyclerView.Adapter<SettingsAdapter.MyView
  
     @Override
     public void onBindViewHolder(MyViewHolder holder, final int position) {
+        TextView time = (TextView) holder.itemView.findViewById(R.id.time);
         TextView txtTime = (TextView) holder.itemView.findViewById(R.id.txtTime);
         TextView txtMode = (TextView) holder.itemView.findViewById(R.id.txtMode);
+
+        if(locationMode == true) {
+            time.setText("Address");
+            txtTime.setText(profileList.get(position).getAddress());
+        } else {
+            time.setText("Time");
+            txtTime.setText(profileList.get(position).getTime());
+        }
+
         ImageView img_delete = (ImageView) holder.itemView.findViewById(R.id.img_delete);
         img_delete.setTag(position);
         img_delete.setOnClickListener(new View.OnClickListener() {
@@ -78,7 +95,7 @@ public class SettingsAdapter extends RecyclerView.Adapter<SettingsAdapter.MyView
                 }
             }
         });
-        txtTime.setText(profileList.get(position).getTime());
+
         txtMode.setText(profileList.get(position).getMode());
 
         holder.itemView.setOnClickListener(new View.OnClickListener() {

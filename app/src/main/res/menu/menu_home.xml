@@ -12,4 +12,11 @@
         android:showAsAction="never|ifRoom"
         android:title="@string/settings"
         tools:ignore="AppCompatResource" />
+
+    <item
+        android:id="@+id/location_mode"
+        android:orderInCategory="100"
+        android:showAsAction="never|ifRoom"
+        android:title="@string/location_mode"
+        tools:ignore="AppCompatResource" />
 </menu>

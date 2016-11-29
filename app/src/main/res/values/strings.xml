@@ -10,6 +10,9 @@
     <string name="str_office">Office</string>
     <string name="str_silent">Silent</string>
     <string name="str_normal">Normal</string>
+    <string name="location_mode">Location Mode</string>
+    <string name="google_maps_api">AIzaSyAYQyJmrtEEuka3PQCAvSiwo0meSKLk3BY</string>
+
 
     <string name="str_personalize">Personalize</string>
     <string name="str_rouse_up">Rouse UP</string>
