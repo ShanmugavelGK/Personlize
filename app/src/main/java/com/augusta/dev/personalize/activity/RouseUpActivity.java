@@ -1,12 +1,16 @@
 package com.augusta.dev.personalize.activity;
 
 import android.content.Context;
+import android.content.Intent;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.view.View;
+import android.widget.Toast;
 
 import com.augusta.dev.personalize.R;
 import com.augusta.dev.personalize.adapter.RouseUpAdapter;
@@ -23,6 +27,7 @@ public class RouseUpActivity extends AppCompatActivity {
     private RouseUpAdapter mAdapter;
     private List<RouseBean> rouseUpList = new ArrayList<>();
     private RecyclerView rcvListRouseUp;
+    private FloatingActionButton fabAddRouseUp;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,16 +39,24 @@ public class RouseUpActivity extends AppCompatActivity {
         bindRecyclerView();
         bindData();
 
+        fabAddRouseUp.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent;
+                intent = new Intent(RouseUpActivity.this, RouseBrowseActivity.class);
+                startActivityForResult(intent, 100);
+            }
+        });
     }
 
     private void bindData() {
-        RouseBean mode;
+        /*RouseBean mode;
         mode = new RouseBean("Wake up", "10:10 AM", "AR Songs");
         rouseUpList.add(mode);
         mode = new RouseBean("Wake up", "11:10 AM", "Ae Dil Hai Mushkil - Title Track  Pritam , Arijit Singh Ae Dil Hai Mushkil");
         rouseUpList.add(mode);
 
-        mAdapter.notifyDataSetChanged();
+        mAdapter.notifyDataSetChanged();*/
     }
 
     private void bindRecyclerView() {
@@ -57,6 +70,8 @@ public class RouseUpActivity extends AppCompatActivity {
     private void findViewById() {
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         rcvListRouseUp = (RecyclerView) findViewById(R.id.rcv_list_rouse);
+
+        fabAddRouseUp = (FloatingActionButton) findViewById(R.id.fab_add_rouse_up);
     }
 
     private void initToolBar() {

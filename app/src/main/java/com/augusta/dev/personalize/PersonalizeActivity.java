@@ -255,21 +255,14 @@ public class PersonalizeActivity extends AppCompatActivity {
                 JSONArray jsonArray = new JSONArray(sJsonArray);
 
                 for (int i = 0; i < jsonArray.length(); i++) {
-
-                    //remoteViews.setTextViewCompoundDrawables(resourceId[i], 0, drawableUnSelect[i], 0, 0);
                     CommonFunction.setVectorRemoteView(remoteViews, resourceId[i], i, false);
                     JSONObject jsonObject = jsonArray.getJSONObject(i);
                     if (jsonObject.getBoolean(Constants.IS_SELECT))
                         CommonFunction.setVectorRemoteView(remoteViews, resourceId[i], i, true);
-                    //remoteViews.setTextViewCompoundDrawables(resourceId[i], 0, drawableSelect[i], 0, 0);
                 }
             }
         } catch (Exception exp) {
             Toast.makeText(mActivity, "Error " + exp.getMessage(), Toast.LENGTH_SHORT).show();
         }
-
-
     }
-
-
 }

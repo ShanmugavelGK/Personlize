@@ -4,6 +4,8 @@ import android.app.Application;
 
 import com.augusta.dev.personalize.R;
 
+import io.realm.Realm;
+import io.realm.RealmConfiguration;
 import uk.co.chrisjenx.calligraphy.CalligraphyConfig;
 
 /**
@@ -19,5 +21,11 @@ public class FontsConfigApp extends Application {
                 .setFontAttrId(R.attr.fontPath)
                 .build()
         );
+        RealmConfiguration realmConfiguration = new RealmConfiguration.Builder(this)
+                .name(Realm.DEFAULT_REALM_NAME)
+                .schemaVersion(0)
+                .deleteRealmIfMigrationNeeded()
+                .build();
+        Realm.setDefaultConfiguration(realmConfiguration);
     }
 }
