@@ -8,6 +8,13 @@
     tools:context="com.augusta.dev.personalize.IntroActivity"
     tools:ignore="MissingPrefix">
 
+    <ImageView
+        android:id="@+id/iv_play_pause"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:padding="5dp"
+        app:srcCompat="@drawable/ic_play" />
 
     <TextView
         android:id="@+id/tv_songs_name"
@@ -15,7 +22,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
+        android:layout_marginLeft="10dp"
         android:layout_toLeftOf="@+id/iv_select"
+        android:layout_toRightOf="@+id/iv_play_pause"
         android:gravity="left"
         android:maxLines="1"
         android:paddingBottom="5dp"

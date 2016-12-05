@@ -19,5 +19,11 @@ public class FontsConfigApp extends Application {
                 .setFontAttrId(R.attr.fontPath)
                 .build()
         );
+
+       /* RealmConfiguration config = new RealmConfiguration.Builder(this)
+                .name(Constants.REALM_NAME)
+                .schemaVersion(0).build();
+        Realm.setDefaultConfiguration(config);*/
+
     }
 }

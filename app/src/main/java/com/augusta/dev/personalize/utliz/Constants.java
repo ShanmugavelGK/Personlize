@@ -27,8 +27,14 @@ public class Constants {
     public final static String ADDRESS = "address";
     public final static String LATITUDE = "latitude";
     public final static String LONGITUDE = "longitude";
-
     public final static int NOTIFICATION_ID = 1001;
+
     public final static int ONE_DAY = 24 * 60 * 60 * 1000;
     public final static String ONLISTUPDATE = "onListUpdate";
+
+    public final static String SONG_ID = "song_id";
+    public final static String SONG_NAME = "song_name";
+    public final static String SONG_PATH = "song_path";
+    public final static String SONG_SELECT_LIST = "song_select_list";
+    public final static String REALM_NAME = "realm_name";
 }

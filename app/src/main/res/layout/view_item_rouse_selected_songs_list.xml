@@ -8,22 +8,14 @@
     tools:context="com.augusta.dev.personalize.IntroActivity"
     tools:ignore="MissingPrefix">
 
-    <ImageView
-        android:id="@+id/iv_is_selected"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerVertical="true"
-        android:layout_marginRight="10dp"
-        app:srcCompat="@drawable/ic_check_blank_circle" />
-
     <TextView
         android:id="@+id/tv_songs_name"
         fontPath="fonts/Roboto-LightItalic.ttf"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
+        android:layout_marginLeft="10dp"
         android:layout_toLeftOf="@+id/iv_delete"
-        android:layout_toRightOf="@+id/iv_is_selected"
         android:gravity="left"
         android:maxLines="1"
         android:paddingBottom="5dp"
