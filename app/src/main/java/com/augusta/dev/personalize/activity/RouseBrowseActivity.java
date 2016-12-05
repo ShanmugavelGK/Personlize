@@ -9,8 +9,6 @@ import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.telephony.TelephonyManager;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -23,9 +21,9 @@ import android.widget.Toast;
 import com.augusta.dev.personalize.R;
 import com.augusta.dev.personalize.adapter.SelectedSongsAdapter;
 import com.augusta.dev.personalize.bean.SongBean;
+import com.augusta.dev.personalize.dbhelper.DBOperation;
 import com.augusta.dev.personalize.interfaces.OnRemoveItem;
 import com.augusta.dev.personalize.utliz.Constants;
-import com.augusta.dev.personalize.utliz.Preference;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -53,6 +51,7 @@ public class RouseBrowseActivity extends AppCompatActivity {
 
     private static final DateFormat sdf = new SimpleDateFormat("hh:mm a");
     private EditText etName;
+    DBOperation dbOperation;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,6 +64,7 @@ public class RouseBrowseActivity extends AppCompatActivity {
         bindRecyclerView();
         bindData();
 
+        dbOperation = new DBOperation(this);
         Calendar cal = Calendar.getInstance();
         etSelectTime.setText("" + sdf.format(cal.getTime()));
 
@@ -206,7 +206,7 @@ public class RouseBrowseActivity extends AppCompatActivity {
 
                 if (strName.length() >= 3) {
                     if (len != 0) {
-                        dataSetPreference(strName, etSelectTime.getText().toString(), selectedSongsList);
+                        saveRouseList(strName, etSelectTime.getText().toString(), selectedSongsList);
                         intent.putExtra("isData", true);
                     } else
                         intent.putExtra("isData", false);
@@ -222,14 +222,13 @@ public class RouseBrowseActivity extends AppCompatActivity {
         }
     }
 
-    private void dataSetPreference(String strName, String timing, List<SongBean> selectedSongsList) {
+    private void saveRouseList(String strName, String timing, List<SongBean> selectedSongsList) {
+
+        dbOperation.writeDB();
         JSONObject jsonObject = new JSONObject();
         try {
-            jsonObject.put("rouseName", strName);
-            jsonObject.put("rouseTime", timing);
-            JSONArray jsonArray = null;
+            JSONArray jsonArray = new JSONArray();
             for (int i = 0; i < selectedSongsList.size(); i++) {
-                jsonArray = new JSONArray();
                 JSONObject obj = new JSONObject();
                 obj.put(Constants.SONG_ID, selectedSongsList.get(i).getSongId());
                 obj.put(Constants.SONG_NAME, selectedSongsList.get(i).getSongName());
@@ -237,10 +236,10 @@ public class RouseBrowseActivity extends AppCompatActivity {
                 jsonArray.put(i, obj);
             }
             jsonObject.put("songList", jsonArray);
-            Preference.setSharedPreferenceString(this, Constants.SONG_SELECT_LIST, jsonObject.toString());
+            dbOperation.insertRouseList(strName, timing, jsonObject.toString());
+            dbOperation.closeDB();
         } catch (JSONException e) {
             e.printStackTrace();
         }
     }
-
 }

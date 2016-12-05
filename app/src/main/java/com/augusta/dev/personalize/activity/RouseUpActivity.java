@@ -9,12 +9,16 @@ import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
+import com.augusta.dev.personalize.DBmodel.DBRouseListModel;
 import com.augusta.dev.personalize.R;
 import com.augusta.dev.personalize.adapter.RouseUpAdapter;
 import com.augusta.dev.personalize.bean.RouseBean;
+import com.augusta.dev.personalize.bean.SongBean;
+import com.augusta.dev.personalize.dbhelper.DBOperation;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,16 +32,17 @@ public class RouseUpActivity extends AppCompatActivity {
     private List<RouseBean> rouseUpList = new ArrayList<>();
     private RecyclerView rcvListRouseUp;
     private FloatingActionButton fabAddRouseUp;
+    private DBOperation dbOperation;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_rouse_up);
+        dbOperation = new DBOperation(this);
 
         findViewById();
         initToolBar();
-        bindRecyclerView();
-        bindData();
+
 
         fabAddRouseUp.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -49,17 +54,40 @@ public class RouseUpActivity extends AppCompatActivity {
         });
     }
 
-    private void bindData() {
-        /*RouseBean mode;
-        mode = new RouseBean("Wake up", "10:10 AM", "AR Songs");
-        rouseUpList.add(mode);
-        mode = new RouseBean("Wake up", "11:10 AM", "Ae Dil Hai Mushkil - Title Track  Pritam , Arijit Singh Ae Dil Hai Mushkil");
-        rouseUpList.add(mode);
-
-        mAdapter.notifyDataSetChanged();*/
+    @Override
+    protected void onResume() {
+        super.onResume();
+        bindRecyclerView();
+        bindData();
     }
 
+    private void bindData() {
+
+        dbOperation.readDB();
+        Log.e("Count1", "" + dbOperation.getRouseListCount());
+        List<DBRouseListModel> mDBRouseListModel = dbOperation.getAllRouseList();
+        dbOperation.closeDB();
+
+        RouseBean mode;
+        for (int i = 0; i < mDBRouseListModel.size(); i++) {
+            mode = new RouseBean(mDBRouseListModel.get(i).getRouseName(), mDBRouseListModel.get(i).getRouseTime(), getSongNameList(mDBRouseListModel.get(i).getListSongBean()));
+            rouseUpList.add(mode);
+        }
+        mAdapter.notifyDataSetChanged();
+    }
+
+    private String getSongNameList(ArrayList<SongBean> s) {
+        StringBuilder songList = new StringBuilder();
+        for (int i = 0; i < s.size(); i++) {
+            songList.append(s.get(i).getSongName());
+            songList.append(", ");
+        }
+        return songList.toString();
+    }
+
+
     private void bindRecyclerView() {
+        rouseUpList = new ArrayList<>();
         mAdapter = new RouseUpAdapter(rouseUpList, this);
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
         rcvListRouseUp.setLayoutManager(mLayoutManager);

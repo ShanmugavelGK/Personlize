@@ -25,4 +25,5 @@ public class Constants {
     public final static String SONG_NAME = "song_name";
     public final static String SONG_PATH = "song_path";
     public final static String SONG_SELECT_LIST = "song_select_list";
+    public final static String REALM_NAME = "realm_name";
 }
