@@ -75,7 +75,9 @@ public class AlarmBroadCastReceiver extends BroadcastReceiver {
                     }
 
                     Preference.setSharedPreferenceString(context, Constants.MODES, jsonArray.toString());
-                    PersonalizeActivity.customNotification(context);
+                    if(Preference.getSharedPreferenceBoolean(context, Constants.ENABLE_NOTIFICATION, false)) {
+                        CommonFunction.customNotification(context);
+                    }
                     updateWidgetManager(context);
                     context.sendBroadcast(new Intent(Constants.ONLISTUPDATE));
 
@@ -154,7 +156,9 @@ public class AlarmBroadCastReceiver extends BroadcastReceiver {
                                 }
 
                                 Preference.setSharedPreferenceString(context, Constants.MODES, jsonArray1.toString());
-                                PersonalizeActivity.customNotification(context);
+                                if(Preference.getSharedPreferenceBoolean(context, Constants.ENABLE_NOTIFICATION, false)) {
+                                    CommonFunction.customNotification(context);
+                                }
                                 updateWidgetManager(context);
                                 context.sendBroadcast(new Intent(Constants.ONLISTUPDATE));
                                 Log.d("mode_location", "mode_location completed."+ new Date());

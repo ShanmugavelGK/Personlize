@@ -10,6 +10,7 @@ import android.widget.Toast;
 
 import com.augusta.dev.personalize.NewAppWidget;
 import com.augusta.dev.personalize.PersonalizeActivity;
+import com.augusta.dev.personalize.utliz.CommonFunction;
 import com.augusta.dev.personalize.utliz.Constants;
 import com.augusta.dev.personalize.utliz.Preference;
 
@@ -62,7 +63,9 @@ public class AlarmBroadCast extends BroadcastReceiver
                     }
 
                     Preference.setSharedPreferenceString(context, Constants.MODES, jsonArray.toString());
-                    PersonalizeActivity.customNotification(context);
+                    if(Preference.getSharedPreferenceBoolean(context, Constants.ENABLE_NOTIFICATION, false)) {
+                        CommonFunction.customNotification(context);
+                    }
                     updateWidgetManager(context);
                     context.sendBroadcast(new Intent(Constants.ONLISTUPDATE));
 

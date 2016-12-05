@@ -22,6 +22,8 @@ import com.augusta.dev.personalize.R;
 import com.augusta.dev.personalize.bean.ModeChildBean;
 import com.augusta.dev.personalize.bean.ModeParentBean;
 import com.augusta.dev.personalize.utliz.CommonFunction;
+import com.augusta.dev.personalize.utliz.Constants;
+import com.augusta.dev.personalize.utliz.Preference;
 
 import java.util.ArrayList;
 
@@ -125,8 +127,9 @@ public class ModeAdapter extends BaseExpandableListAdapter {
                 mModeType.get(groupPosition).setSelected(true);
                 notifyDataSetChanged();
                 CommonFunction.generateModesType(mActivity, mModeType, mModeItems);
-
-                PersonalizeActivity.customNotification(mActivity);
+                if(Preference.getSharedPreferenceBoolean(mActivity, Constants.ENABLE_NOTIFICATION, false)) {
+                    CommonFunction.customNotification(mActivity);
+                }
                 updateAudioManager();
             }
         });

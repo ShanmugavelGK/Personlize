@@ -1,6 +1,7 @@
 package com.augusta.dev.personalize.activity;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -11,6 +12,8 @@ import android.support.v7.widget.Toolbar;
 import com.augusta.dev.personalize.R;
 import com.augusta.dev.personalize.adapter.HomeAdapter;
 import com.augusta.dev.personalize.bean.HomeBean;
+import com.augusta.dev.personalize.utliz.Constants;
+import com.augusta.dev.personalize.utliz.Preference;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,14 +34,24 @@ public class HomeActivity extends AppCompatActivity {
 
         findViewById();
         initToolBar();
+        setAdapter();
+    }
 
+    private void setAdapter() {
+
+        prepareData();
         mAdapter = new HomeAdapter(homeList, this);
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
         rcvListHome.setLayoutManager(mLayoutManager);
         rcvListHome.setItemAnimator(new DefaultItemAnimator());
         rcvListHome.setAdapter(mAdapter);
+    }
 
-        prepareData();
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        homeList = new ArrayList<>();
+        setAdapter();
     }
 
     private void initToolBar() {
@@ -49,15 +62,23 @@ public class HomeActivity extends AppCompatActivity {
     private void prepareData() {
         HomeBean model;
 
-        model = new HomeBean("Personalize", "Personalize the your Mobile or Tablet", R.drawable.ic_home_personalize, true);
-        homeList.add(model);
+        if(Preference.getSharedPreferenceBoolean(this, Constants.ENABLE_PERSONALIZE, false)) {
+            model = new HomeBean(1, "Personalize", "Personalize the your Mobile or Tablet", R.drawable.ic_home_personalize, true);
+            homeList.add(model);
+        }
 
-        model = new HomeBean("Rouse Up", "Set the Wake up tone as a Favorite Ring tones", R.drawable.ic_home_rouse_up, true);
-        homeList.add(model);
+        if(Preference.getSharedPreferenceBoolean(this, Constants.ENABLE_ROUSE_UP, false)) {
+            model = new HomeBean(2, "Rouse Up", "Set the Wake up tone as a Favorite Ring tones", R.drawable.ic_home_rouse_up, true);
+            homeList.add(model);
+        }
 
-        model = new HomeBean("Settings", "Can be custom the app setting", R.drawable.ic_home_setting, true);
+        if(Preference.getSharedPreferenceBoolean(this, Constants.ENABLE_LOC_MODE, false)) {
+            model = new HomeBean(3, "Location Mode", "Personalize the volume based on location", R.drawable.ic_home_rouse_up, true);
+            homeList.add(model);
+        }
+
+        model = new HomeBean(4, "Settings", "Can be custom the app setting", R.drawable.ic_home_setting, true);
         homeList.add(model);
-        mAdapter.notifyDataSetChanged();
     }
 
     private void findViewById() {

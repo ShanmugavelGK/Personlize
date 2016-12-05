@@ -2,8 +2,6 @@ package com.augusta.dev.personalize;
 
 import android.app.Activity;
 import android.app.AlarmManager;
-import android.app.Notification;
-import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -11,19 +9,12 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.app.AppCompatDelegate;
-import android.support.v7.app.NotificationCompat;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.widget.ExpandableListView;
-import android.widget.RemoteViews;
-import android.widget.Toast;
 
 import com.augusta.dev.personalize.adapter.ModeAdapter;
 import com.augusta.dev.personalize.bean.ModeChildBean;
 import com.augusta.dev.personalize.bean.ModeParentBean;
 import com.augusta.dev.personalize.broadcast.AlarmBroadCastReceiver;
-import com.augusta.dev.personalize.broadcast.PendingBroadCastReceiver;
 import com.augusta.dev.personalize.utliz.CommonFunction;
 import com.augusta.dev.personalize.utliz.Constants;
 import com.augusta.dev.personalize.utliz.Preference;
@@ -42,12 +33,7 @@ public class PersonalizeActivity extends AppCompatActivity {
     public ModeAdapter mModeAdapter;
     private ArrayList<ModeParentBean> mModeType;
     private ArrayList<ArrayList<ModeChildBean>> mModeItems;
-
-    static int[] resourceId = new int[]{R.id.normal, R.id.silent, R.id.office, R.id.meeting, R.id.travel};
-
     AlarmManager alarmManager;
-    private PendingIntent alarmIntent;
-    private int EVERY_TWO_MINUTES = 2 * 60 * 1000;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,7 +50,8 @@ public class PersonalizeActivity extends AppCompatActivity {
         Intent intent = new Intent(this, AlarmBroadCastReceiver.class);
         intent.setAction("mode_location");
 
-        alarmIntent = PendingIntent.getBroadcast(this, 100, intent, 0);
+        PendingIntent alarmIntent = PendingIntent.getBroadcast(this, 100, intent, 0);
+        int EVERY_TWO_MINUTES = 2 * 60 * 1000;
         alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(),
                 EVERY_TWO_MINUTES, alarmIntent);
     }
@@ -94,47 +81,6 @@ public class PersonalizeActivity extends AppCompatActivity {
         }
 
         setAdapter();
-        customNotification(this);
-    }
-
-    public static void customNotification(Context mActivity) {
-        // Using RemoteViews to bind custom layouts into Notification
-        RemoteViews remoteViews = new RemoteViews(mActivity.getPackageName(),
-                R.layout.custom_notification);
-
-        // Open NotificationView.java Activity
-        PendingIntent pIntent = PendingIntent.getActivity(mActivity, 0, new Intent(),
-                PendingIntent.FLAG_UPDATE_CURRENT);
-
-        updateAppWidget(mActivity, remoteViews);
-
-        NotificationCompat.Builder builder = (NotificationCompat.Builder) new NotificationCompat.Builder(mActivity)
-                .setSmallIcon(R.drawable.ic_p_24)
-                .setTicker("Notification")
-                .setAutoCancel(false)
-                .setContentIntent(pIntent)
-                .setContent(remoteViews);
-
-        remoteViews.setOnClickPendingIntent(R.id.normal, getPendingSelfIntent(mActivity, "normal"));
-        remoteViews.setOnClickPendingIntent(R.id.silent, getPendingSelfIntent(mActivity, "silent"));
-        remoteViews.setOnClickPendingIntent(R.id.office, getPendingSelfIntent(mActivity, "office"));
-        remoteViews.setOnClickPendingIntent(R.id.meeting, getPendingSelfIntent(mActivity, "meeting"));
-        remoteViews.setOnClickPendingIntent(R.id.travel, getPendingSelfIntent(mActivity, "travel"));
-
-        // Create Notification Manager
-        NotificationManager notificationmanager = (NotificationManager) mActivity.getSystemService(NOTIFICATION_SERVICE);
-        // Build Notification with Notification Manager
-        Notification notification = builder.build();
-        notification.flags = Notification.FLAG_NO_CLEAR;
-        notificationmanager.notify(Constants.NOTIFICATION_ID, notification);
-    }
-
-    protected static PendingIntent getPendingSelfIntent(Context context, String action) {
-
-        Intent intent = new Intent(context, PendingBroadCastReceiver.class);
-        intent.setAction(action);
-
-        return PendingIntent.getBroadcast(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
     }
 
     private void dataPopulate() {
@@ -226,71 +172,4 @@ public class PersonalizeActivity extends AppCompatActivity {
     private void findViewById() {
         elvModeList = (ExpandableListView) findViewById(R.id.elv_mode);
     }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_home, menu);
-        return true;
-    }
-
-    public boolean onOptionsItemSelected(MenuItem item) {
-        Intent intent;
-
-        switch (item.getItemId()) {
-            case R.id.notification_clear:
-                String str = item.getTitle().toString();
-                if (str.equals(getString(R.string.notification_clear))) {
-                    NotificationManager notificationManager = (NotificationManager) this
-                            .getSystemService(Context.NOTIFICATION_SERVICE);
-                    notificationManager.cancel(Constants.NOTIFICATION_ID);
-                    item.setTitle(R.string.notification_show);
-                } else {
-                    item.setTitle(R.string.notification_clear);
-                    customNotification(this);
-                }
-
-                return true;
-            case R.id.settings:
-                intent = new Intent(PersonalizeActivity.this, SettingActivity.class);
-                startActivity(intent);
-                break;
-            case R.id.location_mode:
-                intent = new Intent(PersonalizeActivity.this, LocationModeSettingsActivity.class);
-                startActivity(intent);
-                break;
-            default:
-                return super.onOptionsItemSelected(item);
-
-        }
-        return true;
-    }
-
-    private static void updateAppWidget(Context mActivity, RemoteViews remoteViews) {
-
-        try {
-
-            String sJsonArray = Preference.getSharedPreferenceString(mActivity, Constants.MODES, "");
-
-            if (!sJsonArray.equalsIgnoreCase("")) {
-
-                JSONArray jsonArray = new JSONArray(sJsonArray);
-
-                for (int i = 0; i < jsonArray.length(); i++) {
-
-                    //remoteViews.setTextViewCompoundDrawables(resourceId[i], 0, drawableUnSelect[i], 0, 0);
-                    CommonFunction.setVectorRemoteView(remoteViews, resourceId[i], i, false);
-                    JSONObject jsonObject = jsonArray.getJSONObject(i);
-                    if (jsonObject.getBoolean(Constants.IS_SELECT))
-                        CommonFunction.setVectorRemoteView(remoteViews, resourceId[i], i, true);
-                    //remoteViews.setTextViewCompoundDrawables(resourceId[i], 0, drawableSelect[i], 0, 0);
-                }
-            }
-        } catch (Exception exp) {
-            Toast.makeText(mActivity, "Error " + exp.getMessage(), Toast.LENGTH_SHORT).show();
-        }
-
-
-    }
-
-
 }

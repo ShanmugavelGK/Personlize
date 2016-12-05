@@ -17,13 +17,7 @@
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_maps_api" />
 
-        <activity android:name=".activity.HomeActivity">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
+        <activity android:name=".activity.HomeActivity"/>
 
         <receiver android:name=".NewAppWidget">
             <intent-filter>
@@ -40,12 +34,6 @@
         <activity android:name=".SettingActivity" />
         <activity android:name=".AddNewSettingActivity" />
         <activity android:name=".PersonalizeActivity" />
-        <!--
-             <activity
-             android:name=".activity.HomeActivity"
-             android:label="@string/title_activity_home"
-             android:theme="@style/AppTheme.NoActionBar" />
-        -->
         <activity android:name=".activity.RouseUpActivity" />
         <activity android:name=".activity.RouseBrowseActivity" />
         <activity android:name=".activity.BrowseSongActivity" />
@@ -54,11 +42,20 @@
 
         <receiver android:name=".broadcast.BootCompleted">
             <intent-filter>
-                <action android:name="android.intent.action.BOOT_COMPLETED"></action>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
             </intent-filter>
         </receiver>
 
-        <activity android:name=".AppSettingsActivity"></activity>
+        <activity
+            android:name=".AppSettingsActivity"
+            android:theme="@style/AppThemeDark" />
+        <activity android:name=".SplashActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
     </application>
 
 </manifest>

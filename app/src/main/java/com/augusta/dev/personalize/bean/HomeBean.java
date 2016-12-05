@@ -5,12 +5,22 @@ package com.augusta.dev.personalize.bean;
  */
 
 public class HomeBean {
+    int id=0;
     String title;
     String description;
     int imageId;
     boolean isVisible;
 
-    public HomeBean(String title, String description, int imageId, boolean isVisible) {
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public HomeBean(int id, String title, String description, int imageId, boolean isVisible) {
+        this.id = id;
         this.title = title;
         this.description = description;
         this.imageId = imageId;

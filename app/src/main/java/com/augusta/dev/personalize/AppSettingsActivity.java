@@ -1,14 +1,19 @@
 package com.augusta.dev.personalize;
 
+import android.app.NotificationManager;
+import android.content.Context;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.SwitchCompat;
+import android.support.v7.widget.Toolbar;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.augusta.dev.personalize.utliz.CommonFunction;
 import com.augusta.dev.personalize.utliz.Constants;
 import com.augusta.dev.personalize.utliz.Preference;
 
@@ -23,14 +28,38 @@ public class AppSettingsActivity extends AppCompatActivity implements CompoundBu
 
     Button minus;
     Button plus;
+    //Toolbar toolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_app_settings);
-
+        //setToolbar();
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
         init();
         listener();
+        UpdateData();
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        if(item.getItemId() == android.R.id.home) {
+            finish();
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
+    private void UpdateData() {
+
+        notification.setChecked(Preference.getSharedPreferenceBoolean(AppSettingsActivity.this, Constants.ENABLE_NOTIFICATION, false));
+        personalize.setChecked(Preference.getSharedPreferenceBoolean(AppSettingsActivity.this, Constants.ENABLE_PERSONALIZE, false));
+        location_mode.setChecked(Preference.getSharedPreferenceBoolean(AppSettingsActivity.this, Constants.ENABLE_LOC_MODE, false));
+        rouse_up.setChecked(Preference.getSharedPreferenceBoolean(AppSettingsActivity.this, Constants.ENABLE_ROUSE_UP, false));
+
+        back_loc_time_min.setText("" + Preference.getSharedPreferenceInt(AppSettingsActivity.this, Constants.BACKGROUND_LOC_UPDATE, 0));
     }
 
     private void listener() {
@@ -48,7 +77,7 @@ public class AppSettingsActivity extends AppCompatActivity implements CompoundBu
                     back_loc_time_min.setText((ConvertStringtoInt(back_loc_time_min.getText().toString()) - 1) + "");
                     Preference.setSharedPreferenceInt(AppSettingsActivity.this,
                             Constants.BACKGROUND_LOC_UPDATE,
-                            (ConvertStringtoInt(back_loc_time_min.getText().toString()) - 1));
+                            Integer.parseInt(back_loc_time_min.getText().toString()));
                 }
             }
         });
@@ -63,7 +92,7 @@ public class AppSettingsActivity extends AppCompatActivity implements CompoundBu
                     back_loc_time_min.setText((ConvertStringtoInt(back_loc_time_min.getText().toString()) + 1) + "");
                     Preference.setSharedPreferenceInt(AppSettingsActivity.this,
                             Constants.BACKGROUND_LOC_UPDATE,
-                            (ConvertStringtoInt(back_loc_time_min.getText().toString()) + 1));
+                            Integer.parseInt(back_loc_time_min.getText().toString()));
                 }
             }
         });
@@ -92,6 +121,13 @@ public class AppSettingsActivity extends AppCompatActivity implements CompoundBu
 
         if(compoundButton.getId() == R.id.notification) {
             Preference.setSharedPreferenceBoolean(AppSettingsActivity.this, Constants.ENABLE_NOTIFICATION, b);
+            if(b) {
+                CommonFunction.customNotification(this);
+            } else {
+                NotificationManager notificationManager = (NotificationManager) this
+                        .getSystemService(Context.NOTIFICATION_SERVICE);
+                notificationManager.cancel(Constants.NOTIFICATION_ID);
+            }
 
         } else if(compoundButton.getId() == R.id.personalize) {
             Preference.setSharedPreferenceBoolean(AppSettingsActivity.this, Constants.ENABLE_PERSONALIZE, b);

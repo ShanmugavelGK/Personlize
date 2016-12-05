@@ -1,5 +1,6 @@
 package com.augusta.dev.personalize.adapter;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
@@ -11,6 +12,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.augusta.dev.personalize.AppSettingsActivity;
+import com.augusta.dev.personalize.LocationModeSettingsActivity;
 import com.augusta.dev.personalize.PersonalizeActivity;
 import com.augusta.dev.personalize.R;
 import com.augusta.dev.personalize.activity.RouseUpActivity;
@@ -23,11 +25,10 @@ import java.util.List;
  */
 
 public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.MyViewHolder> {
-    //http://stacktips.com/tutorials/android/android-recyclerview-example
     private List<HomeBean> homeList;
-    Context mContext;
+    Activity mContext;
 
-    public HomeAdapter(List<HomeBean> homeList, Context mContext) {
+    public HomeAdapter(List<HomeBean> homeList, Activity mContext) {
         this.homeList = homeList;
         this.mContext = mContext;
     }
@@ -50,15 +51,18 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.MyViewHolder> 
             @Override
             public void onClick(View view) {
                 Intent intent;
-                if (position == 0) {
+                if (homeList.get(position).getId() == 1) {
                     intent = new Intent(mContext, PersonalizeActivity.class);
-                    mContext.startActivity(intent);
-                } else if (position == 1) {
+                    mContext.startActivityForResult(intent, 10);
+                } else if (homeList.get(position).getId() == 2) {
                     intent = new Intent(mContext, RouseUpActivity.class);
-                    mContext.startActivity(intent);
-                } else if (position == 2) {
+                    mContext.startActivityForResult(intent, 11);
+                } else if (homeList.get(position).getId() == 3) {
+                    intent = new Intent(mContext, LocationModeSettingsActivity.class);
+                    mContext.startActivityForResult(intent, 12);
+                } else if (homeList.get(position).getId() == 4) {
                     intent = new Intent(mContext, AppSettingsActivity.class);
-                    mContext.startActivity(intent);
+                    mContext.startActivityForResult(intent, 13);
                 }
             }
         });

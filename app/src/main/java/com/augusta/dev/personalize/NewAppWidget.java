@@ -128,7 +128,9 @@ public class NewAppWidget extends AppWidgetProvider {
                 if (result) {
                     AppWidgetManager.getInstance(context).updateAppWidget(thisWidget, views);
                     Preference.setSharedPreferenceString(context, Constants.MODES, jsonArray.toString());
-                    PersonalizeActivity.customNotification(context);
+                    if(Preference.getSharedPreferenceBoolean(context, Constants.ENABLE_NOTIFICATION, false)) {
+                        CommonFunction.customNotification(context);
+                    }
                 }
             }
         } catch (Exception exp) {
