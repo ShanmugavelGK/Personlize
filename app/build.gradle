@@ -31,10 +31,6 @@ dependencies {
     compile 'com.android.support:design:25.0.1'
     compile 'com.android.support:recyclerview-v7:25.0.1'
     compile 'uk.co.chrisjenx:calligraphy:2.2.0'
-<<<<<<< HEAD
     compile 'com.google.android.gms:play-services-maps:9.8.0'
-=======
     //compile 'io.realm:realm-android:0.82.1'
-
->>>>>>> 5b648426949e705025b1e6cc8d02e00a4b9e2978
 }
