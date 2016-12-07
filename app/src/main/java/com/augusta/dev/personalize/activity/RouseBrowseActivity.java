@@ -1,5 +1,7 @@
 package com.augusta.dev.personalize.activity;
 
+import android.app.AlarmManager;
+import android.app.PendingIntent;
 import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -18,9 +20,11 @@ import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
+import com.augusta.dev.personalize.AddNewSettingActivity;
 import com.augusta.dev.personalize.R;
 import com.augusta.dev.personalize.adapter.SelectedSongsAdapter;
 import com.augusta.dev.personalize.bean.SongBean;
+import com.augusta.dev.personalize.broadcast.AlarmBroadCastReceiver;
 import com.augusta.dev.personalize.dbhelper.DBOperation;
 import com.augusta.dev.personalize.interfaces.OnRemoveItem;
 import com.augusta.dev.personalize.utliz.Constants;
@@ -30,12 +34,16 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
+
+import static com.augusta.dev.personalize.utliz.Constants.ONE_DAY;
 
 public class RouseBrowseActivity extends AppCompatActivity {
 
@@ -53,10 +61,15 @@ public class RouseBrowseActivity extends AppCompatActivity {
     private EditText etName;
     DBOperation dbOperation;
 
+    AlarmManager alarmManager;
+    private PendingIntent alarmIntent;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_rouse_browse);
+
+        alarmManager= (AlarmManager)getApplicationContext().getSystemService(Context.ALARM_SERVICE);
 
         findViewById();
         initToolBar();
@@ -203,18 +216,48 @@ public class RouseBrowseActivity extends AppCompatActivity {
                 String strName = etName.getText().toString();
                 int len = selectedSongsList.size();
                 Intent intent = new Intent(RouseBrowseActivity.this, RouseUpActivity.class);
+                JSONObject jsonObject = new JSONObject();
 
                 if (strName.length() >= 3) {
                     if (len != 0) {
-                        saveRouseList(strName, etSelectTime.getText().toString(), selectedSongsList);
+                        jsonObject = saveRouseList(strName, etSelectTime.getText().toString(), selectedSongsList);
                         intent.putExtra("isData", true);
                     } else
                         intent.putExtra("isData", false);
                 } else {
                     Toast.makeText(this, "Name must be at least 3 Character.", Toast.LENGTH_SHORT).show();
+                    return false;
                 }
 
                 setResult(100, intent);
+                Intent intent1 = new Intent(RouseBrowseActivity.this, AlarmBroadCastReceiver.class);
+                intent1.setAction("rouse");
+                intent1.putExtra("songs", jsonObject.toString());
+                dbOperation.readDB();
+                int id = dbOperation.getLastId();
+                dbOperation.closeDB();
+
+                Calendar calendar = Calendar.getInstance();
+                calendar.setTimeInMillis(System.currentTimeMillis());
+                SimpleDateFormat format_full = new SimpleDateFormat("hh:mm a");
+                SimpleDateFormat format_hrs = new SimpleDateFormat("HH");
+                SimpleDateFormat format_mins = new SimpleDateFormat("mm");
+                int hour_of_day = 0;
+                int minute = 0;
+                try {
+                    hour_of_day = Integer.parseInt(format_hrs.format(format_full.parse(etSelectTime.getText().toString())));
+                    minute = Integer.parseInt(format_mins.format(format_full.parse(etSelectTime.getText().toString())));
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+                calendar.set(Calendar.HOUR_OF_DAY, hour_of_day);
+                calendar.set(Calendar.MINUTE, minute);
+                calendar.set(Calendar.SECOND, 0);
+
+                alarmIntent = PendingIntent.getBroadcast(RouseBrowseActivity.this, id, intent1, 0);
+                alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(),
+                        ONE_DAY, alarmIntent);
+
                 finish();
                 return true;
             default:
@@ -222,7 +265,7 @@ public class RouseBrowseActivity extends AppCompatActivity {
         }
     }
 
-    private void saveRouseList(String strName, String timing, List<SongBean> selectedSongsList) {
+    private JSONObject saveRouseList(String strName, String timing, List<SongBean> selectedSongsList) {
 
         dbOperation.writeDB();
         JSONObject jsonObject = new JSONObject();
@@ -241,5 +284,7 @@ public class RouseBrowseActivity extends AppCompatActivity {
         } catch (JSONException e) {
             e.printStackTrace();
         }
+
+        return jsonObject;
     }
 }

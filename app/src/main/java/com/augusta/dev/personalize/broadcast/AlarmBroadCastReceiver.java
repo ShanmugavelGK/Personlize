@@ -1,6 +1,8 @@
 package com.augusta.dev.personalize.broadcast;
 
 import android.Manifest;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.appwidget.AppWidgetManager;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
@@ -11,13 +13,16 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.media.AudioManager;
+import android.media.MediaPlayer;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
+import android.support.v7.app.NotificationCompat;
 import android.util.Log;
 import android.widget.Toast;
 
 import com.augusta.dev.personalize.NewAppWidget;
-import com.augusta.dev.personalize.PersonalizeActivity;
+import com.augusta.dev.personalize.R;
 import com.augusta.dev.personalize.utliz.CommonFunction;
 import com.augusta.dev.personalize.utliz.Constants;
 import com.augusta.dev.personalize.utliz.Preference;
@@ -26,13 +31,15 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.File;
+import java.util.ArrayList;
 import java.util.Date;
 
 /**
  * Created by skarthik on 11/3/2016.
  */
 
-public class AlarmBroadCastReceiver extends BroadcastReceiver {
+public class AlarmBroadCastReceiver extends BroadcastReceiver implements MediaPlayer.OnCompletionListener {
 
     Context context;
 
@@ -41,7 +48,17 @@ public class AlarmBroadCastReceiver extends BroadcastReceiver {
 
         this.context = context;
 
-        if (intent.getAction().equalsIgnoreCase("alarm") == true) {
+        if(intent.getAction().equalsIgnoreCase("stop") == true) {
+
+            if(mediaPlayer != null) {
+                mediaPlayer.stop();
+                mediaPlayer.release();
+            } else {
+                mediaPlayer = MediaPlayer.create(context, Uri.parse(intent.getStringExtra("path")));
+                mediaPlayer.stop();
+            }
+
+        } else if (intent.getAction().equalsIgnoreCase("alarm") == true) {
 
             String mode = intent.getStringExtra("mode");
 
@@ -105,6 +122,89 @@ public class AlarmBroadCastReceiver extends BroadcastReceiver {
                 Log.d("mode_location", "mode_location received."+ new Date());
                 LocationUpdate(location);
             }
+        } else if(intent.getAction().equalsIgnoreCase("rouse")) {
+
+            String songs = intent.getStringExtra("songs");
+
+            if (songs.length() != 0) {
+
+                try {
+                    JSONObject jsonObject1 = new JSONObject(songs);
+                    JSONArray jsonArray = jsonObject1.getJSONArray("songList");
+                    for (int i = 0; i < jsonArray.length(); i++) {
+
+                        JSONObject jsonObject = jsonArray.getJSONObject(i);
+                        String song_path = jsonObject.getString(Constants.SONG_PATH);
+                        strings.add(song_path);
+                    }
+
+                    PlaySongs(context);
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+
+    ArrayList<String> strings = new ArrayList<>();
+    int currentTrack = 0;
+    public static MediaPlayer mediaPlayer;
+
+    private void PlaySongs(Context context) {
+
+        Uri uri = Uri.fromFile(new File(strings.get(currentTrack)));
+        mediaPlayer = MediaPlayer.create(context, uri);
+        mediaPlayer.setOnCompletionListener(this);
+        mediaPlayer.start();
+        removeNotify(context);
+        addNotification(context, uri);
+    }
+
+    private void addNotification(Context context, Uri uri) {
+        NotificationCompat.Builder builder = (NotificationCompat.Builder) new NotificationCompat.Builder(context)
+                        .setSmallIcon(R.mipmap.ic_launcher)
+                        .setContentTitle("Notifications Example")
+                        .setContentText("This is a test notification");
+
+        PendingIntent contentIntent = PendingIntent.getActivity(context, 0, new Intent(),
+                PendingIntent.FLAG_UPDATE_CURRENT);
+        builder.setContentIntent(contentIntent);
+        Intent intent = new Intent(context, AlarmBroadCastReceiver.class);
+        intent.setAction("stop");
+        intent.putExtra("path", uri.getPath());
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(context.getApplicationContext(), 2, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        builder.setDeleteIntent(pendingIntent);
+        // Add as notification
+        NotificationManager manager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+        manager.notify(NOTIFY_SONG, builder.build());
+    }
+
+    public static int NOTIFY_SONG = 12;
+
+    public void removeNotify(Context context) {
+        try {
+            NotificationManager notificationManager = (NotificationManager) context
+                    .getSystemService(Context.NOTIFICATION_SERVICE);
+            notificationManager.cancel(NOTIFY_SONG);
+        } catch (Exception exp) {
+
+        }
+    }
+
+    @Override
+    public void onCompletion(MediaPlayer arg0) {
+        mediaPlayer = arg0;
+        mediaPlayer.release();
+        removeNotify(context);
+
+        if (currentTrack < strings.size()) {
+            currentTrack++;
+            Uri uri = Uri.fromFile(new File(strings.get(currentTrack)));
+            mediaPlayer = MediaPlayer.create(context, uri);
+            mediaPlayer.setOnCompletionListener(this);
+            mediaPlayer.start();
+            addNotification(context, uri);
         }
     }
 

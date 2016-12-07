@@ -30,6 +30,7 @@
         </receiver>
         <receiver android:name=".broadcast.PendingBroadCastReceiver" />
         <receiver android:name=".broadcast.AlarmBroadCastReceiver" />
+        <receiver android:name=".broadcast.AlarmBroadCastReceiver$MyBroadcastReceiver" />
 
         <activity android:name=".SettingActivity" />
         <activity android:name=".AddNewSettingActivity" />

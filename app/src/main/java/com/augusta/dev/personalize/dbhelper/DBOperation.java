@@ -71,6 +71,15 @@ public class DBOperation {
         return mDBRouseListModel;
     }
 
+    public int getLastId() {
+        String countQuery = "SELECT  _id FROM " + DatabaseHelper.TABLE_ROUSE_LIST + " ORDER BY _id DESC";
+        Cursor cursor = db.rawQuery(countQuery, null);
+        cursor.moveToFirst();
+        int count = cursor.getInt(cursor.getColumnIndex("_id"));
+        cursor.close();
+        return count;
+    }
+
     private ArrayList<SongBean> getList(String rouseList) {
         ArrayList<SongBean> songBeanList = new ArrayList<>();
         JSONObject jsonObject = null;
