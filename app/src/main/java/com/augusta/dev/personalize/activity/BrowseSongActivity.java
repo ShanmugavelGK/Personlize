@@ -1,7 +1,9 @@
 package com.augusta.dev.personalize.activity;
 
+import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.media.MediaPlayer;
 import android.os.Bundle;
@@ -19,6 +21,8 @@ import com.augusta.dev.personalize.R;
 import com.augusta.dev.personalize.adapter.BrowseSongAdapter;
 import com.augusta.dev.personalize.bean.SongBean;
 import com.augusta.dev.personalize.interfaces.OnClickPlay;
+import com.augusta.dev.personalize.utliz.Constants;
+import com.augusta.dev.personalize.utliz.MPermission;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -39,6 +43,10 @@ public class BrowseSongActivity extends AppCompatActivity {
     public int position = 0;
     int count;
 
+    String[] permissionsList = new String[]{
+            Manifest.permission.READ_EXTERNAL_STORAGE
+    };
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -48,7 +56,10 @@ public class BrowseSongActivity extends AppCompatActivity {
         initToolBar();
 
         bindRecyclerView();
-        bindData();
+        if (MPermission.checkPermissions(this, permissionsList)) {
+            bindData();
+        }
+
     }
 
     private void bindData() {
@@ -108,6 +119,8 @@ public class BrowseSongActivity extends AppCompatActivity {
     private void initToolBar() {
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle(R.string.str_browse_songs);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
     }
 
     public List<SongBean> getAudioList() {
@@ -173,12 +186,18 @@ public class BrowseSongActivity extends AppCompatActivity {
                     }
                 }
                 goBackActivity();
-
-
+                return true;
+            case android.R.id.home:
+                goBackActivity();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
     }
 
     private void goBackActivity() {
@@ -191,5 +210,17 @@ public class BrowseSongActivity extends AppCompatActivity {
         intent.putExtras(bundle);
         setResult(2, intent);
         finish();
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
+        switch (requestCode) {
+            case Constants.MULTIPLE_PERMISSIONS: {
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    bindData();
+                }
+                return;
+            }
+        }
     }
 }

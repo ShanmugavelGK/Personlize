@@ -7,6 +7,7 @@
 
     <string name="menu_song_select">Song Select</string>
     <string name="no_songs">No Songs list. Select the songs using above Plus(+) Symbol</string>
+    <string name="no_rouse">No Rouse list. Add the Rouse using below Plus(+) Symbol</string>
 
     <string name="str_travel">Travel</string>
     <string name="str_meeting">Meeting</string>
@@ -23,4 +24,9 @@
     <string name="str_browse_songs">Browse Songs</string>
     <string name="title_activity_home">HomeActivity</string>
 
+    <string name="dia_yes">Yes</string>
+    <string name="dia_cancel">Cancel</string>
+    <string name="dia_title">Rouse Up</string>
+    <string name="dia_content">Are you sure want to Delete for Rouse Up Item.</string>
+    <string name="action_show_info">Long Press to delete Rouse Up Item</string>
 </resources>

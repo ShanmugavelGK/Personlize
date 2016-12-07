@@ -140,6 +140,8 @@ public class RouseBrowseActivity extends AppCompatActivity {
     private void initToolBar() {
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle(R.string.str_set_song_time);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
     }
 
     private void showTime() {
@@ -213,6 +215,38 @@ public class RouseBrowseActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_song_selected:
+                gotoBack();
+                return true;
+            case android.R.id.home:
+                onBackPressed();
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
+    @Override
+    public void onBackPressed() {
+        gotoBack();
+    }
+
+    private void gotoBack() {
+        String strName = etName.getText().toString();
+        int len = selectedSongsList.size();
+        Intent intent = new Intent(RouseBrowseActivity.this, RouseUpActivity.class);
+
+        if (strName.length() >= 3) {
+            if (len != 0) {
+                saveRouseList(strName, etSelectTime.getText().toString(), selectedSongsList);
+                intent.putExtra("isData", true);
+            } else
+                intent.putExtra("isData", false);
+        } else {
+            intent.putExtra("isData", false);
+            Toast.makeText(this, "Name must be at least 3 Character.", Toast.LENGTH_SHORT).show();
+        }
+
+        setResult(100, intent);
+
                 String strName = etName.getText().toString();
                 int len = selectedSongsList.size();
                 Intent intent = new Intent(RouseBrowseActivity.this, RouseUpActivity.class);
@@ -259,10 +293,7 @@ public class RouseBrowseActivity extends AppCompatActivity {
                         ONE_DAY, alarmIntent);
 
                 finish();
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
-        }
+        finish();
     }
 
     private JSONObject saveRouseList(String strName, String timing, List<SongBean> selectedSongsList) {

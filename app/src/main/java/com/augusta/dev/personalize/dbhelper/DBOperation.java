@@ -50,7 +50,9 @@ public class DBOperation {
     }
 
     public void deleteRouseList(int _id) {
+        readDB();
         db.delete(DatabaseHelper.TABLE_ROUSE_LIST, DatabaseHelper.ROUSE_ID + "=" + _id, null);
+        closeDB();
     }
 
     public void deleteAllRouseList() {
@@ -58,18 +60,28 @@ public class DBOperation {
     }
 
     public List<DBRouseListModel> getAllRouseList() {
+        readDB();
         List<DBRouseListModel> mDBRouseListModel = new ArrayList<>();
         String selectQuery = "SELECT  * FROM " + DatabaseHelper.TABLE_ROUSE_LIST;
         Cursor cursor = db.rawQuery(selectQuery, null);
         DBRouseListModel model;
         if (cursor.moveToFirst()) {
             do {
-                model = new DBRouseListModel(cursor.getInt(0), cursor.getString(1), cursor.getString(2), getList(cursor.getString(3)));
+                model = new DBRouseListModel(cursor.getInt(0), cursor.getString(1), cursor.getString(2), getSongNameList(getList(cursor.getString(3))), getList(cursor.getString(3)));
                 mDBRouseListModel.add(model);
             } while (cursor.moveToNext());
         }
+        closeDB();
         return mDBRouseListModel;
     }
+    private String getSongNameList(ArrayList<SongBean> s) {
+        StringBuilder songList = new StringBuilder();
+        for (int i = 0; i < s.size(); i++) {
+            songList.append(s.get(i).getSongName());
+            songList.append(", ");
+        }
+        return songList.toString();
+}
 
     public int getLastId() {
         String countQuery = "SELECT  _id FROM " + DatabaseHelper.TABLE_ROUSE_LIST + " ORDER BY _id DESC";
@@ -99,10 +111,12 @@ public class DBOperation {
     }
 
     public int getRouseListCount() {
+        readDB();
         String countQuery = "SELECT  * FROM " + DatabaseHelper.TABLE_ROUSE_LIST;
         Cursor cursor = db.rawQuery(countQuery, null);
         int count = cursor.getCount();
         cursor.close();
+        closeDB();
         return count;
     }
 }

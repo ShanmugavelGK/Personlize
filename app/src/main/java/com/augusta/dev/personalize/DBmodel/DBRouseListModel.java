@@ -14,14 +14,24 @@ public class DBRouseListModel {
     int rouseId;
     String rouseName;
     String rouseTime;
+    String strSongList;
+
+
     ArrayList<SongBean> listSongBean;
 
-    public DBRouseListModel(int rouseId, String rouseName, String rouseTime, ArrayList<SongBean> listSongBean) {
+    public DBRouseListModel(int rouseId, String rouseName, String rouseTime, String strSongList, ArrayList<SongBean> listSongBean) {
         this.rouseId = rouseId;
         this.rouseName = rouseName;
         this.rouseTime = rouseTime;
+        this.strSongList = strSongList;
         this.listSongBean = listSongBean;
     }
+
+    /*public DBRouseListModel(String strSongList, String rouseTime, String rouseName) {
+        this.strSongList = strSongList;
+        this.rouseTime = rouseTime;
+        this.rouseName = rouseName;
+    }*/
 
     public int getRouseId() {
         return rouseId;
@@ -53,5 +63,13 @@ public class DBRouseListModel {
 
     public void setListSongBean(ArrayList<SongBean> listSongBean) {
         this.listSongBean = listSongBean;
+    }
+
+    public String getStrSongList() {
+        return strSongList;
+    }
+
+    public void setStrSongList(String strSongList) {
+        this.strSongList = strSongList;
     }
 }
